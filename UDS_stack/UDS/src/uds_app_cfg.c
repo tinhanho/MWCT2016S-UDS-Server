@@ -1,6 +1,7 @@
 #include "uds_app_cfg.h"
 //#include "watchdog_hal.h" TODO
 //#include "boot.h" TODO
+#include "uds_data_cfg.h" // new added for test
 
 typedef struct
 {
@@ -208,6 +209,9 @@ static void UDS_RoutineControl(struct UDSServiceInfo* i_pstUDSServiceInfo, tUdsA
 /*Tester present service*/
 static void UDS_TesterPresent(struct UDSServiceInfo* i_pstUDSServiceInfo, tUdsAppMsgInfo *m_pstPDUMsg);
 
+/*read data by identifier*/
+static void UDS_ReadDataByIdentifier(struct UDSServiceInfo* i_pstUDSServiceInfo, tUdsAppMsgInfo *m_pstPDUMsg);
+
 /***********************UDS service Static Global value************************/
 /*dig serverice config table*/
 const static tUDSService gs_astUDSService[] =
@@ -248,14 +252,23 @@ const static tUDSService gs_astUDSService[] =
         UDS_RoutineControl
     },
 
-    /*routine control*/
+    /*Tester present*/
     {
         0x3Eu,
 		DEFALUT_SESSION | PROGRAM_SESSION | EXTEND_SESSION,
 		SUPPORT_PHYSICAL_ADDR | SUPPORT_FUNCTION_ADDR,
 		NONE_SECURITY,
-        UDS_TesterPresent
-    },		
+		UDS_TesterPresent
+    },
+
+    /*read data by identifier*/
+    {
+        0x22,
+        DEFALUT_SESSION | PROGRAM_SESSION | EXTEND_SESSION,
+		SUPPORT_PHYSICAL_ADDR | SUPPORT_FUNCTION_ADDR,
+		NONE_SECURITY,        
+        UDS_ReadDataByIdentifier
+    }
 };
 
 /*Get bootloader version*/
@@ -474,6 +487,35 @@ static void UDS_DoResetMCU(uint8 Txstatus)
         while(1)
         {
             /*wait watch dog reset mcu*/
+        }
+    }
+}
+
+/************new service added************/
+/* read data by id service*/
+static void UDS_ReadDataByIdentifier(struct UDSServiceInfo* i_pstUDSServiceInfo, tUdsAppMsgInfo *m_pstPDUMsg)
+{
+    uint16 dataIdentifier = 0u;
+    uint8 idsNum = 0u;
+    unimax_UdsDataType* m_dataConfig = NULL_PTR;
+
+    ASSERT(NULL_PTR == m_pstPDUMsg);
+    ASSERT(NULL_PTR == i_pstUDSServiceInfo);
+
+    dataIdentifier =
+        (m_pstPDUMsg->aDataBuf[1u] << 8 |
+        m_pstPDUMsg->aDataBuf[2u]);
+    
+    m_dataConfig = unimax_UDS_GetDataInfo(&idsNum);
+
+    for(uint8 i=0; i<idsNum; i++)
+    {
+        if(dataIdentifier == m_dataConfig[i].DID)
+        {
+            m_pstPDUMsg->aDataBuf[0u] = i_pstUDSServiceInfo->serNum + 0x40u;
+            fsl_memcpy(&m_pstPDUMsg->aDataBuf[1u], m_dataConfig[i].data, m_dataConfig[i].datalen);
+            m_pstPDUMsg->xDataLen = m_dataConfig[i].datalen + 1; /*plus header*/
+            return;
         }
     }
 }
