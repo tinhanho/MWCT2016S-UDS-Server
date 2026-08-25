@@ -16,6 +16,8 @@
 /*Enable debug IO*/
 #define EN_DEBUG_IO
 #define TP_DebugPrintf SPRT_PrintString
+#define FLS_DebugPrintf SPRT_PrintString
+#define APP_DebugPrintf SPRT_PrintString
 
 /*Enable debug timer*/
 //#define EN_DEBUG_TIMER

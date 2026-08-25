@@ -1,5 +1,7 @@
 # MWCT2016S-UDS-Server
 
+## App Demo
+
 1. Import FIFO and UDS_Stack
 2. Add ```TP_SystemTickCtl``` and ```UDS_SystemTickCtl``` in 1ms task
 ```c
@@ -50,5 +52,22 @@ void flexcan0_Callback(uint8 instance,Flexcan_Ip_EventType eventType,
     }
     else
     {}
+}
+```
+
+
+## CAN Bootloader Demo
+1. Do all the steps in [App Demo](#app-demo)
+2. Import boot, Flash_app and HAL in src 
+3. Add C40_Ip, Power_Ip, Power module in configuration tool
+4. Update C40_Ip.c
+```c
+typedef C40_Ip_StatusType (*C40_Ip_StartSequenceType)(uint8_t Operation,uint32_t TimeoutCnt);
+C40_Ip_StartSequenceType C40_Ip_StartSequencePtr = NULL;
+
+void C40_Ip_StartSequenceInit(uint8_t* FlsDrv)
+{
+    //blx cmd address need to add 1
+    C40_Ip_StartSequencePtr = (C40_Ip_StartSequenceType)(((uint32_t)FlsDrv)+1);
 }
 ```
