@@ -16,55 +16,41 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef BOOT_CFG_H
-#define BOOT_CFG_H
+#ifndef BOOTLOADER_MAIN_H
+#define BOOTLOADER_MAIN_H
+
 
 /*******************************************************************************
  * User Include
  ******************************************************************************/
 //#include "includes.h"
-#include "StandardTypes.h"
-#include "Power_Ip.h"
-
+#include "standardTypes.h"
 /*! 
- * @file: boot_Cfg.h
+ * @file: bootloader_main.h
  *
  * @brief: Add your description here for this file.
+ *
+ * @page misra_violations MISRA-C:2012 violations
+ *
+ * @section Rule_X-Y Rule: X.Y (Required)
+ * Violates MISRA 2012 Required Rule X.Y, Rule description here.
  *
  * @par Version Histroy
 <pre><b>
 Version:   Author:       Date&&Time:      Revision Log: </b>
- V1.0.0  Tomlin Tang  2019-01-31 09:51:53  First Creat
+ V1.0.0  Tomlin Tang  2019-03-25 11:50:56  First Creat
 When you update, please do not forgot to del me and add your info at here.
 </pre>
+ */
+
+/*!
+ * @addtogroup bootloader_main
+ * @{
  */
 
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-
-/*set download app successful */
-extern void Boot_SetDownloadAppSuccessful(void);
-
-
-/*Is request enter bootloader?*/
-extern boolean Boot_IsRequestEnterBootloader(void);
-
-
-/*clear request enter bootloader flag*/
-extern void Boot_ClearRequestEnterBootloaderFlag(void);
-
-/*Jump to APP.*/
-extern void Boot_JumpToApp(const uint32 i_AppAddr);
-
-/*remap multi-core application*/
-extern void Boot_RemapApplication(void);
-
-/*when power on, clear all flag in RAM for ECC.*/
-extern void Boot_PowerONClearAllFlag(void);
-
-/*Is power on trigger reset?*/
-extern boolean Boot_IsPowerOnTriggerReset(void);
 
 #if defined (__cplusplus)
 extern "C" {
@@ -73,13 +59,57 @@ extern "C" {
 /*******************************************************************************
  * API
  ******************************************************************************/
+ 
+/*! @}*/
+/*!
+ * @name Initialize
+ * Initial this module.
+ *
+ * To disable this module, you need call another function (see \ref Uninitialize "Disable Module")
+ */
+/*! @{*/
 
+/*!
+ * @brief To initial this module.
+ *
+ * This function returns the state of the initial.
+ *
+ * @param[in] instance instance number
+ * @return the initial state.
+ */
+extern void BOOTLOADER_MAIN_Init(void (*pfBSP_Init)(void), void (*pfAbortTxMsg)(void));
+
+/*Bootloader main demo*/
+extern void BOOTLOADER_MAIN_Demo(void);
+
+
+/*! @}*/
+
+/*!
+ * @anchor Uninitialize
+ * @name Disable Module
+ * TODO:Some description here.
+ */
+/*! @{*/
+
+/*!
+ * @brief uninitial this module.
+ *
+ * TODO:Some description here.
+ *
+ * @param[in] instance instance number
+ */
+void BOOTLOADER_MAIN_Deinit(void);
+
+/*! @}*/
 
 #if defined (__cplusplus)
 }
 #endif
 
-#endif /* BOOT_CFG_H */
+/*! @}*/
+
+#endif /* BOOTLOADER_MAIN_H */
 /*******************************************************************************
  * EOF
  ******************************************************************************/

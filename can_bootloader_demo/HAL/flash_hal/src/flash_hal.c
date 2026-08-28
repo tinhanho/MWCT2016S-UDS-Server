@@ -70,8 +70,10 @@ static boolean FLASH_HAL_Init(void)
 	uint32 FlashDriverAddrStart,FlashDriverEndAddr;
 	FLASH_HAL_GetFlashDriverInfo(&FlashDriverAddrStart,&FlashDriverEndAddr);
 	//Fls_Init((uint8*)(FlashDriverAddrStart),FlashDriverEndAddr-FlashDriverAddrStart);
-	C40_Ip_StartSequenceInit((uint8*)(FlashDriverAddrStart));
-	C40_Ip_Init(&C40_Ip_InitCfg);
+	//C40_Ip_StartSequenceInit((uint8*)(FlashDriverAddrStart));
+
+	//C40_Ip_Init(&C40ConfigSet_BOARD_InitPeripherals_InitCfg);
+	C40_Ip_Init(&C40_Ip_InitCfg);  /*  change for mcal  */ 
     return TRUE;
 }
 
@@ -104,12 +106,20 @@ static boolean FLASH_HAL_EraseSector(const uint32 i_startAddr, const uint32 i_no
 		/* Erase sector */
 		DisableAllInterrupts();
 		c40Res = C40_Ip_MainInterfaceSectorErase(VirtualSector+i, 0);
-		EnableAllInterrupts();
 		do
 		{
 			c40Status = C40_Ip_MainInterfaceSectorEraseStatus();
 		}
 		while (C40_IP_STATUS_BUSY == c40Status);
+		ASM_KEYWORD(" dsb ");
+		ASM_KEYWORD(" isb ");
+
+		/* 延遲約 10~20 微秒，讓 Flash 硬體控制器完成 Pipeline 與 Bus 復位 */
+		for (volatile uint32 delay = 0; delay < 1000; delay++)
+		{
+			ASM_KEYWORD(" nop ");
+		}
+		EnableAllInterrupts();
 		if((C40_IP_STATUS_SUCCESS == c40Res) && (C40_IP_STATUS_SUCCESS == c40Status))
 		{
 			retstates = TRUE;
@@ -198,7 +208,7 @@ static boolean FLASH_HAL_WriteData(const uint32 i_startAddr,
 			{
 				aDataBuf[index] = i_pDataBuf[writeDataLen + index];
 			}
-			if(C40_IP_STATUS_SUCCESS == C40_Ip_MainInterfaceWrite(i_startAddr+writeDataLen,8,i_pDataBuf,0))
+			if(C40_IP_STATUS_SUCCESS == C40_Ip_MainInterfaceWrite(i_startAddr+writeDataLen,8,aDataBuf,0)) /*  这个地方应该为aDataBuf */
 		    {
 		    	retstates = TRUE;
 		    }			
@@ -217,10 +227,15 @@ static boolean FLASH_HAL_WriteData(const uint32 i_startAddr,
 				break;
 		    }
 
+			// unimax debug
+			while(C40_IP_STATUS_SUCCESS != C40_Ip_MainInterfaceWriteStatus())
+			{
+				// do nothing 
+			}
+
 			writeDataLen += lessWriteLen;
 		}
 	}
-
 	EnableAllInterrupts();
 	
 	return retstates;
@@ -242,7 +257,7 @@ static boolean FLASH_HAL_ReadData(const uint32 i_startAddr,
 					    		uint8 *o_pDataBuf)
 {
 	uint32 i;
-	FLS_DebugPrintf("\n %s\n", __func__);
+	//FLS_DebugPrintf("\n %s\n", __func__);
     //ReadFlashMemory(i_startAddr, i_readLen, o_pDataBuf);
 	for(i=0;i<i_readLen;i++)
 	{
@@ -261,7 +276,7 @@ static boolean FLASH_HAL_ReadData(const uint32 i_startAddr,
  *END**************************************************************************/
 static void FLASH_HAL_Deinit(void)
 {
-	FLS_DebugPrintf("\n %s\n", __func__);
+	//FLS_DebugPrintf("\n %s\n", __func__);
 }
 
 /*FUNCTION**********************************************************************

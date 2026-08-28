@@ -50,6 +50,7 @@ typedef struct
 	uint32 downloadAppSuccessfulAddr;  /*download APP successful flag address*/
 }tBootInfo;
 
+/* unimax edit */
 const static tBootInfo gs_stBootInfo = {
 	16u,    /*Exchange inforamtion length must N * 4.*/
 	0x5Au,  
@@ -177,7 +178,7 @@ typedef void (*AppAddr)(void);
 AppAddr JumpAppAddr = NULL;
 void Boot_JumpToApp(const uint32 i_AppAddr)
 {
-	AppAddr resetHandle = (AppAddr)(i_AppAddr);
+	AppAddr resetHandle = (AppAddr)(i_AppAddr | 0x01);
 
 	(resetHandle)();
 

@@ -1,5 +1,10 @@
 # MWCT2016S-UDS-Server
 
+
+## Installaltion
+
+- Follow the PCAN tutorial and install ECUBus
+
 ## App Demo
 
 1. Import FIFO and UDS_Stack
@@ -55,11 +60,16 @@ void flexcan0_Callback(uint8 instance,Flexcan_Ip_EventType eventType,
 }
 ```
 
-
 ## CAN Bootloader Demo
+
+> Use the Boot_Test project rather instead of S32K312_user_config
+
 1. Do all the steps in [App Demo](#app-demo)
-2. Import boot, Flash_app and HAL in src 
-3. Add C40_Ip, Power_Ip, Power module in configuration tool
+2. Import boot, Flash_app, bootmain.c .h and HAL in src and update UDS_stack
+3. Add C40_Ip, Power_Ip module in configuration tool
+
+<!-- 
+Flash driver in RAM needs further step and proper binary code for flash driver
 4. Update C40_Ip.c
 ```c
 typedef C40_Ip_StatusType (*C40_Ip_StartSequenceType)(uint8_t Operation,uint32_t TimeoutCnt);
@@ -69,5 +79,6 @@ void C40_Ip_StartSequenceInit(uint8_t* FlsDrv)
 {
     //blx cmd address need to add 1
     C40_Ip_StartSequencePtr = (C40_Ip_StartSequenceType)(((uint32_t)FlsDrv)+1);
-}
+} 
 ```
+!-->

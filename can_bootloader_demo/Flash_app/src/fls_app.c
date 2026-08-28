@@ -312,6 +312,8 @@ void Flash_InitDowloadInfo(void)
 	
 	fsl_memset(&gs_stFlashDownloadInfo.stFlashOperateAPI, 0x0u, sizeof(tFlashOperateAPI));
 
+	FLASH_HAL_RegisterFlashAPI(&gs_stFlashDownloadInfo.stFlashOperateAPI);
+
 	fsl_memset(&gs_stAppFlashStatus, 0xFFu, sizeof(tAppFlashStatus));
 }
 
@@ -331,6 +333,8 @@ void FLASH_APP_Init(void)
 	gs_stFlashDownloadInfo.pstAppFlashStatus = &gs_stAppFlashStatus;
 	
 	fsl_memset(&gs_stFlashDownloadInfo.stFlashOperateAPI, 0x0u, sizeof(tFlashOperateAPI));
+
+	FLASH_HAL_RegisterFlashAPI(&gs_stFlashDownloadInfo.stFlashOperateAPI);
 
 	fsl_memset(&gs_stAppFlashStatus, 0xFFu, sizeof(tAppFlashStatus));	
 }
@@ -562,10 +566,13 @@ static uint8 Flash_Erase(boolean * o_pbIsOperateFinsh)
 	ASSERT(NULL_PTR == o_pbIsOperateFinsh);
 
     /*check flash driver valid or not?*/
+	/*Skip flash driver download cause we use CODERAM?*/
+	/*
 	if(TRUE != Flash_IsFlashDriverDownload())
 	{
 		return FALSE;
 	}
+	*/
 
 	*o_pbIsOperateFinsh = FALSE; 
 
@@ -837,10 +844,10 @@ static uint8 Flash_Write(boolean * o_pbIsOperateFinsh)
 	uint8 fillCnt = 0u;
 
     /*check flash driver valid or not?*/
-	if(TRUE != Flash_IsFlashDriverDownload())
-	{
-		return FALSE;
-	}
+//	if(TRUE != Flash_IsFlashDriverDownload())
+//	{
+//		return FALSE;
+//	}
 
 	result = TRUE;
 	while(gs_stFlashDownloadInfo.receiveProgramDataLength >= PROGRAM_SIZE)
@@ -999,7 +1006,7 @@ static uint8 Flash_Checksum(boolean * o_pbIsOperateFinsh)
 	* flash driver data or APP data (flash driver is downloaded) can be calculate CRC
 	*/
 	if((TRUE == Flash_IsFlashDriverSoftwareData()) ||
-	   ((TRUE != Flash_IsFlashDriverSoftwareData()) && (TRUE == Flash_IsFlashDriverDownload())))
+	   ((TRUE != Flash_IsFlashDriverSoftwareData()) /*&& (TRUE == Flash_IsFlashDriverDownload())*/))
 	{
 		/*check crc value*/
 		isCheckSuccessful = Flash_DoChecksum(o_pbIsOperateFinsh);
@@ -1197,7 +1204,7 @@ uint8 Flash_ProgramRegion(const uint32 i_addr,
 
 	if(TRUE == result)
 	{
-		if((FALSE == Flash_IsFlashDriverDownload()) || (TRUE == Flash_IsFlashDriverSoftwareData()))
+		if(/*(FALSE == Flash_IsFlashDriverDownload()) ||*/ (TRUE == Flash_IsFlashDriverSoftwareData())) // unimax edit
 		{
 			/*if flash driver, copy the data to RAM*/
 			if(TRUE == Flash_IsFlashDriverSoftwareData())
@@ -1308,9 +1315,9 @@ uint8 Flash_IsReadAppInfoFromFlashValid(void)
 /*Is application in flash valid? If valid return TRUE, else return FALSE.*/
 uint8 Flash_IsAppInFlashValid(void)
 {
-	if(((TRUE == Flash_IsFlashProgramSuccessful()) &&
-		(TRUE == Flash_IsFlashEraseSuccessful())) &&
-	   (TRUE == Flash_IsFlashStructValid()))
+	if(((0xA5 == Flash_IsFlashProgramSuccessful()) &&
+		(0x5A == Flash_IsFlashEraseSuccessful())) &&
+	   (0x01 == Flash_IsFlashStructValid()))
 	{
 		return TRUE;
 	}
