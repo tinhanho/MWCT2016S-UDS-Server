@@ -10,7 +10,7 @@
 #define PROGRAM_SIZE (128u)
 
 /*Flash finger print length*/
-#define FL_FINGER_PRINT_LENGTH  (2u) // unimax debug
+#define FL_FINGER_PRINT_LENGTH  (17u)
 
 /*invalid UDS services ID*/
 #define INVALID_UDS_SERVICES_ID (0xFFu)

@@ -75,7 +75,7 @@ void Boot_JumpToAppOrNot(void)
 {
 	uint32 resetHandlerAddr = 0u;
 
-	if((TRUE == Boot_IsAPPValid()) && (TRUE != Boot_IsRequestEnterBootloader()))
+	if((TRUE == Boot_IsAPPValid())) /*&& (TRUE != Boot_IsRequestEnterBootloader()))*/
 	{
 		Boot_RemapApplication();
 		

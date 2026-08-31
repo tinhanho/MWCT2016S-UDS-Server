@@ -141,7 +141,7 @@ const BlockInfo_t gs_astFlashDriverBlock[] = {
 
 /*application can used space*/
 const BlockInfo_t gs_astBlockNumA[] = {
-  {0x005B4000, 0x005D4000},	/*App A information is in the block.*/
+  {0x00554000, 0x005D4000},	/*App A information is in the block.*/
 }; 
 
 /*logical num*/

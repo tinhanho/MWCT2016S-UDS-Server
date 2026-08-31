@@ -66,14 +66,15 @@ static void BOOTLOADER_MAIN_PrintVersion(void);
 void BOOTLOADER_MAIN_Init(void (*pfBSP_Init)(void), void (*pfAbortTxMsg)(void))
 {
 	/*Is power on ?*/
-	if(TRUE == Boot_IsPowerOnTriggerReset())
-	{
-		Boot_PowerONClearAllFlag();
-	}
-
-	/*Check jump to APP or not.*/
-	Boot_JumpToAppOrNot();
+	/* RAM is reset in startup.s. Don't know why use this*/
+	// if(TRUE == Boot_IsPowerOnTriggerReset())
+	// {
+	// 	//Boot_PowerONClearAllFlag();
+		
+	// 	/*Check jump to APP or not.*/
+	// }
 	
+	Boot_JumpToAppOrNot();
 	/*User Init: clock CAN Lin etc..*/
 	if(NULL_PTR != pfBSP_Init)
 	{
@@ -101,7 +102,7 @@ void BOOTLOADER_MAIN_Init(void (*pfBSP_Init)(void), void (*pfAbortTxMsg)(void))
 
 	UDS_Init();
 
-	Boot_CheckReqBootloaderMode();
+	//Boot_CheckReqBootloaderMode();
 
 	TP_RegisterAbortTxMsg(pfAbortTxMsg);
 

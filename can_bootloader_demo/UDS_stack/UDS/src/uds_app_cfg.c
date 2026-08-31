@@ -285,7 +285,7 @@ const static tUDSService gs_astUDSService[] =
         0x10u,
         DEFALUT_SESSION | PROGRAM_SESSION | EXTEND_SESSION,
         SUPPORT_PHYSICAL_ADDR | SUPPORT_FUNCTION_ADDR,
-        NONE_SECURITY,
+        NONE_SECURITY | SECURITY_LEVEL_1,
         UDS_DigSession
     },
 
@@ -294,7 +294,7 @@ const static tUDSService gs_astUDSService[] =
         0x28u,
         DEFALUT_SESSION | PROGRAM_SESSION | EXTEND_SESSION,
         SUPPORT_PHYSICAL_ADDR | SUPPORT_FUNCTION_ADDR,
-        NONE_SECURITY,
+        NONE_SECURITY | SECURITY_LEVEL_1,
         UDS_CommunicationControl
     },
 
@@ -303,7 +303,7 @@ const static tUDSService gs_astUDSService[] =
         0x85u,
         DEFALUT_SESSION | PROGRAM_SESSION | EXTEND_SESSION,
         SUPPORT_PHYSICAL_ADDR | SUPPORT_FUNCTION_ADDR,
-        NONE_SECURITY,
+        NONE_SECURITY | SECURITY_LEVEL_1,
         UDS_ControlDTCSetting
     },
 
@@ -321,7 +321,7 @@ const static tUDSService gs_astUDSService[] =
         0x3Eu,
 		DEFALUT_SESSION | PROGRAM_SESSION | EXTEND_SESSION,
 		SUPPORT_PHYSICAL_ADDR | SUPPORT_FUNCTION_ADDR,
-		NONE_SECURITY,
+		NONE_SECURITY | SECURITY_LEVEL_1,
 		UDS_TesterPresent
     },
 
@@ -330,7 +330,7 @@ const static tUDSService gs_astUDSService[] =
         0x22,
         DEFALUT_SESSION | PROGRAM_SESSION | EXTEND_SESSION,
 		SUPPORT_PHYSICAL_ADDR | SUPPORT_FUNCTION_ADDR,
-		NONE_SECURITY,        
+		NONE_SECURITY | SECURITY_LEVEL_1,        
         UDS_ReadDataByIdentifier
     },
 
@@ -339,7 +339,7 @@ const static tUDSService gs_astUDSService[] =
         0x27u,
         PROGRAM_SESSION,
         SUPPORT_PHYSICAL_ADDR,
-        NONE_SECURITY,
+        NONE_SECURITY | SECURITY_LEVEL_1,
         UDS_SecurityAccess
     },
 
@@ -899,8 +899,10 @@ static void UDS_ResetECU(struct UDSServiceInfo* i_pstUDSServiceInfo, tUdsAppMsgI
 
     m_pstPDUMsg->pfUDSTxMsgServiceCallBack = &UDS_DoResetMCU;
 
+    m_pstPDUMsg->aDataBuf[0u] = i_pstUDSServiceInfo->serNum + 0x40u;
+    m_pstPDUMsg->xDataLen = 1u;
     /*request client timeout time*/
-    UDS_SetNegativeErroCode(i_pstUDSServiceInfo->serNum, RCRRP, m_pstPDUMsg);
+    //UDS_SetNegativeErroCode(i_pstUDSServiceInfo->serNum, RCRRP, m_pstPDUMsg);
 }
 
 /*Tester present service*/

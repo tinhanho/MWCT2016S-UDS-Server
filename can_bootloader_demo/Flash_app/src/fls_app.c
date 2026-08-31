@@ -1291,7 +1291,9 @@ static boolean Flash_SaveAppInfoData(const uint32 i_appInfoDataStartAddr)
 #ifdef EN_APP_INFO_DATA_IN_NONE_FLASH
 	res = FLASH_HAL_ReadAPPInfoData(i_appInfoDataStartAddr, (sizeof(tAppFlashStatus)), &gs_stAppFlashStatus);
 #else
-	gs_stAppFlashStatus = *(tAppFlashStatus*)i_appInfoDataStartAddr;
+	// gs_stAppFlashStatus = *(tAppFlashStatus*)i_appInfoDataStartAddr;
+	gs_stAppFlashStatus.isFlashProgramSuccessfull = (*(uint32*)(i_appInfoDataStartAddr) == 0x5AA55AA5) ? TRUE : FALSE;
+	gs_stAppFlashStatus.appStartAddr = *((uint32*)(i_appInfoDataStartAddr)+3);
 	res = TRUE;
 #endif
 
@@ -1306,21 +1308,25 @@ uint8 Flash_IsReadAppInfoFromFlashValid(void)
 	/*read application information from flash*/
 	Flash_ReadNewestAppInfoFromFlash();
 	
-	Flash_CreateAppStatusCrc(&xCrc);
+	// Flash_CreateAppStatusCrc(&xCrc);
 
-	return Flash_IsFlashAppCrcEqualStorage(xCrc);
+	// return Flash_IsFlashAppCrcEqualStorage(xCrc);
 
+	// DO NOT CHECK CRC cause not written into flash
+	return true; 
 }
 
 /*Is application in flash valid? If valid return TRUE, else return FALSE.*/
 uint8 Flash_IsAppInFlashValid(void)
 {
-	if(((0xA5 == Flash_IsFlashProgramSuccessful()) &&
-		(0x5A == Flash_IsFlashEraseSuccessful())) &&
-	   (0x01 == Flash_IsFlashStructValid()))
-	{
-		return TRUE;
-	}
+	// if(((TRUE == Flash_IsFlashProgramSuccessful()) &&
+	// 	(TRUE == Flash_IsFlashEraseSuccessful())) &&
+	//    (TRUE == Flash_IsFlashStructValid()))
+	// {
+	// 	return TRUE;
+	// }
+
+	if(TRUE == Flash_IsFlashProgramSuccessful()) return TRUE;
 
 	return FALSE;
 }
