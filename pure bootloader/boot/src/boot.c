@@ -85,29 +85,29 @@ void Boot_JumpToAppOrNot(void)
 	}
 }
 
-/*request bootloader mode check*/
-boolean Boot_CheckReqBootloaderMode(void)
-{
-	boolean ret = FALSE;
+// /*request bootloader mode check*/
+// boolean Boot_CheckReqBootloaderMode(void)
+// {
+// 	boolean ret = FALSE;
 
-	if(TRUE == Boot_IsRequestEnterBootloader())
-	{
-		Boot_ClearRequestEnterBootloaderFlag();
+// 	if(TRUE == Boot_IsRequestEnterBootloader())
+// 	{
+// 		Boot_ClearRequestEnterBootloaderFlag();
 
-		/*write a message to host based on TP*/
-		if(TRUE == UDS_TxMsgToHost())
-		{
-			ret = TRUE;
-			APP_DebugPrintf("\n Enter bootloader mode\n");
-		}
-		else
-		{
-			APP_DebugPrintf("\n Enter bootloader mode and transmit confirm message failed!\n");
-		}
-	}
+// 		/*write a message to host based on TP*/
+// 		if(TRUE == UDS_TxMsgToHost())
+// 		{
+// 			ret = TRUE;
+// 			APP_DebugPrintf("\n Enter bootloader mode\n");
+// 		}
+// 		else
+// 		{
+// 			APP_DebugPrintf("\n Enter bootloader mode and transmit confirm message failed!\n");
+// 		}
+// 	}
 
-	return ret;
-}
+// 	return ret;
+// }
 
 
 /******************************************************************************

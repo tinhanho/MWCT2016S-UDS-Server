@@ -43,15 +43,15 @@ When you update, please do not forgot to del me and add your info at here.
  ******************************************************************************/
 
 /*set download app successful */
-extern void Boot_SetDownloadAppSuccessful(void);
+// extern void Boot_SetDownloadAppSuccessful(void);
 
 
-/*Is request enter bootloader?*/
-extern boolean Boot_IsRequestEnterBootloader(void);
+// /*Is request enter bootloader?*/
+// extern boolean Boot_IsRequestEnterBootloader(void);
 
 
-/*clear request enter bootloader flag*/
-extern void Boot_ClearRequestEnterBootloaderFlag(void);
+// /*clear request enter bootloader flag*/
+// extern void Boot_ClearRequestEnterBootloaderFlag(void);
 
 /*Jump to APP.*/
 extern void Boot_JumpToApp(const uint32 i_AppAddr);
@@ -59,11 +59,11 @@ extern void Boot_JumpToApp(const uint32 i_AppAddr);
 /*remap multi-core application*/
 extern void Boot_RemapApplication(void);
 
-/*when power on, clear all flag in RAM for ECC.*/
-extern void Boot_PowerONClearAllFlag(void);
+// /*when power on, clear all flag in RAM for ECC.*/
+// extern void Boot_PowerONClearAllFlag(void);
 
-/*Is power on trigger reset?*/
-extern boolean Boot_IsPowerOnTriggerReset(void);
+// /*Is power on trigger reset?*/
+// extern boolean Boot_IsPowerOnTriggerReset(void);
 
 #if defined (__cplusplus)
 extern "C" {

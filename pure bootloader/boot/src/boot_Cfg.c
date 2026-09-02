@@ -40,73 +40,73 @@ When you update, please do not forgot to del me and add your info at here.
 /*******************************************************************************
  * Variables
  ******************************************************************************/
-typedef struct
-{
-	uint8 infoDataLen;             /*Exchange inforamtion length must N * 4.*/
-	uint8 requestEnterBootloader;  /*Request enter bootloader mode flag*/
-	uint8 downloadAPPSuccessful;   /*downlaod APP successful flag*/
-	uint32 infoStartAddr;          /*exchange information start address*/
-	uint32 requestEnterBootloaderAddr; /*Request enter bootloader flag address */
-	uint32 downloadAppSuccessfulAddr;  /*download APP successful flag address*/
-}tBootInfo;
+// typedef struct
+// {
+// 	uint8 infoDataLen;             /*Exchange inforamtion length must N * 4.*/
+// 	uint8 requestEnterBootloader;  /*Request enter bootloader mode flag*/
+// 	uint8 downloadAPPSuccessful;   /*downlaod APP successful flag*/
+// 	uint32 infoStartAddr;          /*exchange information start address*/
+// 	uint32 requestEnterBootloaderAddr; /*Request enter bootloader flag address */
+// 	uint32 downloadAppSuccessfulAddr;  /*download APP successful flag address*/
+// }tBootInfo;
 
-const static tBootInfo gs_stBootInfo = {
-	16u,    /*Exchange inforamtion length must N * 4.*/
-	0x5Au,  
-	0xA5u,
-	0x20417FF0u,
-	0x20417FF1u,
-	0x20417FF0u
-};
+// const static tBootInfo gs_stBootInfo = {
+// 	16u,    /*Exchange inforamtion length must N * 4.*/
+// 	0x5Au,  
+// 	0xA5u,
+// 	0x20417FF0u,
+// 	0x20417FF1u,
+// 	0x20417FF0u
+// };
 
-/*get information storage CRC*/
-#define GetInfoStorageCRC() (*(uint16 *)(gs_stBootInfo.infoStartAddr + 14))
+// /*get information storage CRC*/
+// #define GetInfoStorageCRC() (*(uint16 *)(gs_stBootInfo.infoStartAddr + 14))
 
-/*set information CRC */
-#define SetInforCRC(xCrc) ((*(uint16 *)(gs_stBootInfo.infoStartAddr + 14)) = (uint16)(xCrc))
+// /*set information CRC */
+// #define SetInforCRC(xCrc) ((*(uint16 *)(gs_stBootInfo.infoStartAddr + 14)) = (uint16)(xCrc))
 
-/*Is information valid?*/
-static boolean Boot_IsInfoValid(void);
+// /*Is information valid?*/
+// static boolean Boot_IsInfoValid(void);
 
-/*calculate information CRC*/
-static uint16 Boot_CalculateInfoCRC(void);
+// /*calculate information CRC*/
+// static uint16 Boot_CalculateInfoCRC(void);
 
-/*set download app successful */
-void Boot_SetDownloadAppSuccessful(void)
-{
-	uint16 infoCrc = 0u;
+// /*set download app successful */
+// void Boot_SetDownloadAppSuccessful(void)
+// {
+// 	uint16 infoCrc = 0u;
 
-	*((uint8 *)gs_stBootInfo.downloadAppSuccessfulAddr) = gs_stBootInfo.downloadAPPSuccessful;
+// 	*((uint8 *)gs_stBootInfo.downloadAppSuccessfulAddr) = gs_stBootInfo.downloadAPPSuccessful;
 
-	infoCrc = Boot_CalculateInfoCRC();
-	SetInforCRC(infoCrc);
-}
+// 	infoCrc = Boot_CalculateInfoCRC();
+// 	SetInforCRC(infoCrc);
+// }
 
-/*Is request enter bootloader?*/
-boolean Boot_IsRequestEnterBootloader(void)
-{
-	boolean result = FALSE;
+// /*Is request enter bootloader?*/
+// boolean Boot_IsRequestEnterBootloader(void)
+// {
+// 	boolean result = FALSE;
 
-	if(TRUE == Boot_IsInfoValid())
-	{
-		if(gs_stBootInfo.requestEnterBootloader == *((uint8 *)gs_stBootInfo.requestEnterBootloaderAddr))
-		{
-			result = TRUE;
-		}
-	}
-	return result;
-}
+// 	if(TRUE == Boot_IsInfoValid())
+// 	{
+// 		if(gs_stBootInfo.requestEnterBootloader == *((uint8 *)gs_stBootInfo.requestEnterBootloaderAddr))
+// 		{
+// 			result = TRUE;
+// 		}
+// 	}
+// 	return result;
+// }
 
-/*clear request enter bootloader flag*/
-void Boot_ClearRequestEnterBootloaderFlag(void)
-{
-	uint16 infoCrc = 0u;
+// /*clear request enter bootloader flag*/
+// void Boot_ClearRequestEnterBootloaderFlag(void)
+// {
+// 	uint16 infoCrc = 0u;
 
-	*((uint8 *)gs_stBootInfo.requestEnterBootloaderAddr) = 0u;
+// 	*((uint8 *)gs_stBootInfo.requestEnterBootloaderAddr) = 0u;
 
-	infoCrc = Boot_CalculateInfoCRC();
-	SetInforCRC(infoCrc);
-}
+// 	infoCrc = Boot_CalculateInfoCRC();
+// 	SetInforCRC(infoCrc);
+// }
 
 /*Is power on trigger reset?*/
 //boolean Boot_IsPowerOnTriggerReset(void)
@@ -122,20 +122,20 @@ void Boot_ClearRequestEnterBootloaderFlag(void)
 //}
 
 /*when power on, clear all flag in RAM for ECC.*/
-void Boot_PowerONClearAllFlag(void)
-{
-	uint16 infoCrc = 0u;
-	uint8 index = 0u;
-
-	/*clear RAM with 4 bytes for ECC*/
-	for(index = 0u; index < (gs_stBootInfo.infoDataLen >> 2u); index++)
-	{
-		*((uint32 *)gs_stBootInfo.infoStartAddr + index) = 0u;
-	}
-	
-	infoCrc = Boot_CalculateInfoCRC();
-	SetInforCRC(infoCrc);	
-}
+//void Boot_PowerONClearAllFlag(void)
+//{
+//	uint16 infoCrc = 0u;
+//	uint8 index = 0u;
+//
+//	/*clear RAM with 4 bytes for ECC*/
+//	for(index = 0u; index < (gs_stBootInfo.infoDataLen >> 2u); index++)
+//	{
+//		*((uint32 *)gs_stBootInfo.infoStartAddr + index) = 0u;
+//	}
+//
+//	infoCrc = Boot_CalculateInfoCRC();
+//	SetInforCRC(infoCrc);
+//}
 
 /*remap multi-core application*/
 void Boot_RemapApplication(void)
@@ -177,7 +177,7 @@ typedef void (*AppAddr)(void);
 AppAddr JumpAppAddr = NULL;
 void Boot_JumpToApp(const uint32 i_AppAddr)
 {
-	AppAddr resetHandle = (AppAddr)((i_AppAddr + 0x420) | 0x01);
+	AppAddr resetHandle = (AppAddr)((i_AppAddr /*+ 0x420*/) | 0x01);
 
 	(resetHandle)();
 
@@ -194,34 +194,34 @@ void Boot_JumpToApp(const uint32 i_AppAddr)
 #endif
 }
 
-/*Is information valid?*/
-static boolean Boot_IsInfoValid(void)
-{
-	uint16 infoCrc = 0u;
-	uint16 storageCrc = 0u;
-	boolean result = FALSE;
+// /*Is information valid?*/
+// static boolean Boot_IsInfoValid(void)
+// {
+// 	uint16 infoCrc = 0u;
+// 	uint16 storageCrc = 0u;
+// 	boolean result = FALSE;
 	
-	infoCrc = Boot_CalculateInfoCRC();
+// 	infoCrc = Boot_CalculateInfoCRC();
 
-	storageCrc = GetInfoStorageCRC();
+// 	storageCrc = GetInfoStorageCRC();
 
-	if(storageCrc == infoCrc)
-	{
-		result = TRUE;
-	}
+// 	if(storageCrc == infoCrc)
+// 	{
+// 		result = TRUE;
+// 	}
 
-	return result;
-}
+// 	return result;
+// }
 
-/*calculate information CRC*/
-static uint16 Boot_CalculateInfoCRC(void)
-{
-	uint32 infoCrc = 0u;
+// /*calculate information CRC*/
+// static uint16 Boot_CalculateInfoCRC(void)
+// {
+// 	uint32 infoCrc = 0u;
 
-	CRC_HAL_CalculateCRCOnce((const uint8 *)gs_stBootInfo.infoStartAddr, gs_stBootInfo.infoDataLen - 2u, &infoCrc);
+// 	CRC_HAL_CalculateCRCOnce((const uint8 *)gs_stBootInfo.infoStartAddr, gs_stBootInfo.infoDataLen - 2u, &infoCrc);
 
-	return (uint16)infoCrc;
-}
+// 	return (uint16)infoCrc;
+// }
 
 
 /******************************************************************************

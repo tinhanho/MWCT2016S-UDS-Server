@@ -38,8 +38,9 @@
 #include "Siul2_Port_Ip_Cfg.h"
 #include "FlexCAN_Ip.h"
 #include "IntCtrl_Ip.h"
-#include "Mem_43_INFLS.h"
-#include "MemAcc.h"
+#include "C40_Ip.h"
+//#include "Mem_43_INFLS.h"
+//#include "MemAcc.h"
 /* User includes */
 
 #include "bootloader_main.h"
@@ -135,8 +136,9 @@ static void BSP_init(void)
 {
     Clock_Ip_Init(&Clock_Ip_aClockConfig[0]);
     Siul2_Port_Ip_Init(NUM_OF_CONFIGURED_PINS_PortContainer_0_VS_0,g_pin_mux_InitConfigArr_PortContainer_0_VS_0);
-    Mem_43_INFLS_Init(&Mem_43_INFLS_Config);
-    MemAcc_Init(&MemAcc_Config);
+    C40_Ip_Init(&C40_Ip_InitCfg);
+    //Mem_43_INFLS_Init(&Mem_43_INFLS_Config);
+    //MemAcc_Init(&MemAcc_Config);
 //    IntCtrl_Ip_Init(&IntCtrlConfig_0);
 //    IntCtrl_Ip_ConfigIrqRouting(&intRouteConfig);
     IntCtrl_Ip_EnableIrq(FlexCAN0_1_IRQn);

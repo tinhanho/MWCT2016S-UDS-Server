@@ -400,7 +400,7 @@ void FLASH_HAL_GetRestHanlderInfo(boolean *o_pIsEnableWriteResetHandlerInFlash, 
 	ASSERT(NULL_PTR == o_pResetHandlerLength);
 
 	*o_pIsEnableWriteResetHandlerInFlash = EN_WRITE_RESET_HANDLER_IN_FLASH;
-	*o_pResetHanderOffset = APP_VECTOR_TABLE_OFFSET + RESET_HANDLE_OFFSET;
+	*o_pResetHanderOffset = 0x2420;//APP_VECTOR_TABLE_OFFSET + RESET_HANDLE_OFFSET;
 	*o_pResetHandlerLength = RESET_HANDLER_ADDR_LEN;
 }
 

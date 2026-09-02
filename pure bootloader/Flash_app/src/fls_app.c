@@ -168,7 +168,7 @@ do{\
 static uint8 gs_reqTimeStatus = 0xFFu;
 
 /*application flash status*/
-static tAppFlashStatus gs_stAppFlashStatus; 
+__attribute__((section(".int_noinit"))) static tAppFlashStatus gs_stAppFlashStatus; 
 
 /*set request time status*/
 #define Flash_ClearRequestTimeStauts()\
@@ -323,9 +323,9 @@ void FLASH_APP_Init(void)
 {
 	gs_stFlashDownloadInfo.isFingerPrintWritten = FALSE;
 
-	//Flash_EraseFlashDriverInRAM();
+	Flash_EraseFlashDriverInRAM();
 
-	//Flash_SetFlashDriverNotDonwload();
+	Flash_SetFlashDriverNotDonwload();
 
 	Flash_SetNextDownloadStep(FL_REQUEST_STEP);
 
@@ -1292,9 +1292,7 @@ static boolean Flash_SaveAppInfoData(const uint32 i_appInfoDataStartAddr)
 #ifdef EN_APP_INFO_DATA_IN_NONE_FLASH
 	res = FLASH_HAL_ReadAPPInfoData(i_appInfoDataStartAddr, (sizeof(tAppFlashStatus)), &gs_stAppFlashStatus);
 #else
-	// gs_stAppFlashStatus = *(tAppFlashStatus*)i_appInfoDataStartAddr;
-	gs_stAppFlashStatus.isFlashProgramSuccessfull = (*(uint32*)(i_appInfoDataStartAddr) == 0x5AA55AA5) ? TRUE : FALSE;
-	gs_stAppFlashStatus.appStartAddr = *((uint32*)(i_appInfoDataStartAddr)+3);
+	gs_stAppFlashStatus = *(tAppFlashStatus*)i_appInfoDataStartAddr;
 	res = TRUE;
 #endif
 
@@ -1307,27 +1305,25 @@ uint8 Flash_IsReadAppInfoFromFlashValid(void)
 	tCrc xCrc = 0u;
 
 	/*read application information from flash*/
-	Flash_ReadNewestAppInfoFromFlash();
+	//Flash_ReadNewestAppInfoFromFlash();/*app information in RAM!*/
 	
-	// Flash_CreateAppStatusCrc(&xCrc);
+	Flash_CreateAppStatusCrc(&xCrc);
 
-	// return Flash_IsFlashAppCrcEqualStorage(xCrc);
+	return Flash_IsFlashAppCrcEqualStorage(xCrc);
 
 	// DO NOT CHECK CRC cause not written into flash
-	return true; 
+	// return true; 
 }
 
 /*Is application in flash valid? If valid return TRUE, else return FALSE.*/
 uint8 Flash_IsAppInFlashValid(void)
 {
-	// if(((TRUE == Flash_IsFlashProgramSuccessful()) &&
-	// 	(TRUE == Flash_IsFlashEraseSuccessful())) &&
-	//    (TRUE == Flash_IsFlashStructValid()))
-	// {
-	// 	return TRUE;
-	// }
-
-	if(TRUE == Flash_IsFlashProgramSuccessful()) return TRUE;
+	if(((TRUE == Flash_IsFlashProgramSuccessful()) &&
+		(TRUE == Flash_IsFlashEraseSuccessful())) &&
+	   (TRUE == Flash_IsFlashStructValid()))
+	{
+		return TRUE;
+	}
 
 	return FALSE;
 }
@@ -1420,36 +1416,36 @@ uint8 Flash_WriteFlashAppInfo(void)
 			/*get app start address from flash. The address is the newest APP, because the APP info not write in flash, so the APP is old*/
 			resetHandleAddr = appInfoStartAddr + resetHandleOffset;
 #endif
-			Flash_SaveAppResetHandlerAddr(*((uint32*)resetHandleAddr), resetHandleLength);
+			Flash_SaveAppResetHandlerAddr(resetHandleAddr, resetHandleLength);
 
-			FLS_DebugPrintf("APP type =%X, APP address=0x%X\n", oldAppType, *((uint32*)resetHandleAddr));
+			FLS_DebugPrintf("APP type =%X, APP address=0x%X\n", oldAppType, resetHandleAddr);
 
 			crc = 0u;
 			Flash_CreateAndSaveAppStatusCrc(&crc);
 		}	
 
-		if(NULL_PTR != pAppStatusPtr)
-		{
-			result = FALSE;
+// 		if(NULL_PTR != pAppStatusPtr)
+// 		{
+// 			result = FALSE;
 			
-#ifdef EN_APP_INFO_DATA_IN_NONE_FLASH
-			/*APP information storage in EEPROM or DFLASH*/
-			result = FLASH_HAL_WriteAPPInfoData(appInfoStartAddr,
-											   (uint8 *)pAppStatusPtr,
-											   sizeof(tAppFlashStatus));
-#else
-			if(NULL_PTR != gs_stFlashDownloadInfo.stFlashOperateAPI.pfProgramData)
-			{
-				result = gs_stFlashDownloadInfo.stFlashOperateAPI.pfProgramData(appInfoStartAddr, 
-				                                    (uint8 *)pAppStatusPtr,
-				                                    sizeof(tAppFlashStatus));
-			}
-#endif			
-		}
-		else
-		{
-			result = FALSE;
-		}
+// #ifdef EN_APP_INFO_DATA_IN_NONE_FLASH
+// 			/*APP information storage in EEPROM or DFLASH*/
+// 			result = FLASH_HAL_WriteAPPInfoData(appInfoStartAddr,
+// 											   (uint8 *)pAppStatusPtr,
+// 											   sizeof(tAppFlashStatus));
+// #else
+// 			if(NULL_PTR != gs_stFlashDownloadInfo.stFlashOperateAPI.pfProgramData)
+// 			{
+// 				result = gs_stFlashDownloadInfo.stFlashOperateAPI.pfProgramData(appInfoStartAddr, 
+// 				                                    (uint8 *)pAppStatusPtr,
+// 				                                    sizeof(tAppFlashStatus));
+// 			}
+// #endif			
+// 		}
+// 		else
+// 		{
+// 			result = FALSE;
+// 		}
 	}
 
 	return result;

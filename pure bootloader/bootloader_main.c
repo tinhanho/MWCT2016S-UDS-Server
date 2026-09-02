@@ -103,7 +103,7 @@ void BOOTLOADER_MAIN_Init(void (*pfBSP_Init)(void), void (*pfAbortTxMsg)(void))
 
 	UDS_Init();
 
-	Boot_CheckReqBootloaderMode();
+	//Boot_CheckReqBootloaderMode();
 
 	TP_RegisterAbortTxMsg(pfAbortTxMsg);
 
