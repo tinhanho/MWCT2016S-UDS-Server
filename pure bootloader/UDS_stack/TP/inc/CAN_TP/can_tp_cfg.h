@@ -2,6 +2,7 @@
 #define __CAN_TP_CFG_H__
 
 //#include "includes.h"
+#include "user_config.h"
 
 #ifdef EN_CAN_TP
 #include "TP_cfg.h"

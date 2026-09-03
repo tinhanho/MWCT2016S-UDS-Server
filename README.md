@@ -1,5 +1,6 @@
 # MWCT2016S-UDS-Server
 
+> Reference: check [nxp](https://community.nxp.com/t5/S32K-Knowledge-Base/Unified-bootloader-Demo/ta-p/1423099)
 
 ## Installaltion
 

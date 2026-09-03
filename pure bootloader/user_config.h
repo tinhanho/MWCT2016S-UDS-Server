@@ -86,7 +86,8 @@ do{\
 #define	RX_PHY_ID (0x784u)   /*can tp rx phy ID*/
 #define	TX_ID (0x7F0u)       /*can tp tx ID*/
 /*Enable TX CAN FD or not. If enable CAN FD, CAN TP transmit SF message will over 8 Bytes*/
-//#define EN_TX_CAN_FD
+#define EN_TX_CAN_FD
+#define EN_RX_CAN_FD
 #endif
 
 #ifdef EN_LIN_TP

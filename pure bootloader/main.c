@@ -57,6 +57,7 @@ Flexcan_Ip_MsgBuffType g_RXCANMsg;
 extern void CAN0_ORED_0_31_MB_IRQHandler(void);
 extern void Swt_Ip_Swt0_Isr(void);
 
+#ifdef EN_RX_CAN_FD
 const Flexcan_Ip_DataInfoType RXCANMsgConfig = 
 {
     .msg_id_type = FLEXCAN_MSG_ID_STD,
@@ -66,7 +67,28 @@ const Flexcan_Ip_DataInfoType RXCANMsgConfig =
     .is_polling = FALSE,
     .is_remote = FALSE
 };
+#else 
+const Flexcan_Ip_DataInfoType RXCANMsgConfig = 
+{
+    .msg_id_type = FLEXCAN_MSG_ID_STD,
+    .data_length = 8u,
+    .is_polling = FALSE,
+    .is_remote = FALSE
+};
+#endif
 
+
+#ifdef EN_TX_CAN_FD
+Flexcan_Ip_DataInfoType TXCANMsgConfig = 
+{
+    .msg_id_type = FLEXCAN_MSG_ID_STD,
+    .data_length = 64u,
+    .fd_enable = TRUE,
+    .enable_brs = TRUE,
+    .is_polling = FALSE,
+    .is_remote = FALSE
+};
+#else
 Flexcan_Ip_DataInfoType TXCANMsgConfig = 
 {
     .msg_id_type = FLEXCAN_MSG_ID_STD,
@@ -74,6 +96,7 @@ Flexcan_Ip_DataInfoType TXCANMsgConfig =
     .is_polling = FALSE,
     .is_remote = FALSE
 };
+#endif
 
 /**
  * @brief 
