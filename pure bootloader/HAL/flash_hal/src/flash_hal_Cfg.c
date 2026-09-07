@@ -136,12 +136,12 @@ MagniV S12ZVL/S32ZVM   --                       21ms
 
 /*flash driver config*/
 const BlockInfo_t gs_astFlashDriverBlock[] = {
-  0x20000000u, 0x20000400u
+  {0x20000000u, 0x20000400u}
 };
 
 /*application can used space*/
 const BlockInfo_t gs_astBlockNumA[] = {
-  {0x00554000, 0x005D4000},	/*App A information is in the block.*/
+  {0x00432420, 0x005FFFFF},	/*App A information is in the block.*/
 }; 
 
 /*logical num*/

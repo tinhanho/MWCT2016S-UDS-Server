@@ -57,7 +57,6 @@ When you update, please do not forgot to del me and add your info at here.
 extern "C" {
 #endif
 
-#define FIRMWARE_FINGERPRINT_TEST
 #define ALIGN 4
 
 typedef struct{

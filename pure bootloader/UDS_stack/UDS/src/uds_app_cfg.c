@@ -602,7 +602,7 @@ static void UDS_WriteDataByIdentifier(struct UDSServiceInfo* i_pstUDSServiceInfo
     if(TRUE )//== UDS_IsWriteFingerprintRight(m_pstPDUMsg))
     {
         /*do write fingerprint*/
-        //Flash_SavePrintfigner(&m_pstPDUMsg->aDataBuf[3u], (m_pstPDUMsg->xDataLen - 3u));
+        Flash_SavePrintfigner(&m_pstPDUMsg->aDataBuf[3u], (m_pstPDUMsg->xDataLen - 3u));
 
         m_pstPDUMsg->aDataBuf[0u] = i_pstUDSServiceInfo->serNum + 0x40u;
         m_pstPDUMsg->aDataBuf[1u] = 0xF1u;
@@ -1555,8 +1555,8 @@ boolean UDS_TxMsgToHost(void)
 
     stUdsAppMsg.xUdsId = TP_GetConfigTxMsgID();
     stUdsAppMsg.xDataLen = 2u;
-    stUdsAppMsg.aDataBuf[0u] = 0x51u;
-    stUdsAppMsg.aDataBuf[1u] = 0x01u;
+    stUdsAppMsg.aDataBuf[0u] = 0x50u;
+    stUdsAppMsg.aDataBuf[1u] = 0x02u;
     stUdsAppMsg.pfUDSTxMsgServiceCallBack = UDS_TXConfrimMsgCallback;
 
     ret = TP_WriteAFrameDataInTP(stUdsAppMsg.xUdsId, stUdsAppMsg.pfUDSTxMsgServiceCallBack,

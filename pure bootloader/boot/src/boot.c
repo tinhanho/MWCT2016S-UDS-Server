@@ -142,10 +142,6 @@ boolean Boot_WriteBootInfo(void)
 	bootInfo.appStartAddr = Flash_GetAppStartAddress();
 	memcpy(bootInfo.fingerPrint, Flash_GetFingerPrintAddr(), FL_FINGER_PRINT_LENGTH);
 
-#ifdef FIRMWARE_FINGERPRINT_TEST
-	bootInfo.fingerPrint[0] = 0xAA;
-#endif
-
 	DisableAllInterrupts();
 	C40_Ip_VirtualSectorsType VirtualSector = C40_Ip_GetSectorNumberFromAddress(APP_STATUS_ADDRESS);	
 	if(C40_IP_STATUS_SECTOR_PROTECTED == C40_Ip_GetLock(VirtualSector))

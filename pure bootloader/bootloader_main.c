@@ -76,17 +76,8 @@ void BOOTLOADER_MAIN_Init(void (*pfBSP_Init)(void), void (*pfAbortTxMsg)(void))
 
 
 	Boot_JumpToAppOrNot();
-
-	/*Enter bootloader, clear appstatus and bootinfo*/
-	FLASH_APP_Init();
-
-	Boot_ClearBootInfo(); /*How to handle a false return value?*/
-
-	if(TRUE == Flash_IsAppEnterPrgroamSession())
-	{
-		UDS_SetCurrentSession(PROGRAM_SESSION);
-		UDS_RestartS3Server();
-	}
+	
+	/*Enter bootloader*/
 	
 	BOOTLOADER_DEBUG_Init();
 
@@ -112,8 +103,24 @@ void BOOTLOADER_MAIN_Init(void (*pfBSP_Init)(void), void (*pfAbortTxMsg)(void))
 
 	TP_RegisterAbortTxMsg(pfAbortTxMsg);
 
+	
 	/*Print bootloader version*/
 	BOOTLOADER_MAIN_PrintVersion();
+	
+	/* store session status and send msg*/
+	if(TRUE == Flash_IsAppEnterPrgroamSession())
+	{
+		UDS_SetCurrentSession(PROGRAM_SESSION);
+		UDS_RestartS3Server();
+		UDS_TxMsgToHost();
+	}
+
+
+	/*clear appstatus and bootinfo*/
+
+	FLASH_APP_Init();
+
+	Boot_ClearBootInfo(); /*How to handle a false return value?*/
 }
 
 /*FUNCTION**********************************************************************

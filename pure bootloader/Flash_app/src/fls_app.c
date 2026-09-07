@@ -1368,24 +1368,9 @@ void Flash_EraseFlashDriverInRAM(void)
 /*save printfigner*/
 void Flash_SavePrintfigner(const uint8 *i_pPrintfigner, const uint8 i_printfinerLen)
 {
+	volatile uint8 *fingerPrintAddr = Flash_GetFingerPrintAddr();
 
-	uint8 printfignerLen = 0u;
-	tCrc crc = 0u;
-	
-	ASSERT(NULL_PTR == i_pPrintfigner);
-
-	if(i_printfinerLen > FL_FINGER_PRINT_LENGTH)
-	{
-		printfignerLen = FL_FINGER_PRINT_LENGTH;
-	}
-	else
-	{
-		printfignerLen =  (uint8)i_printfinerLen;
-	}
-
-	fsl_memcpy((void *)gs_stFlashDownloadInfo.pstAppFlashStatus->aFingerPrint,(const void *)i_pPrintfigner,printfignerLen);
-
-	Flash_CreateAndSaveAppStatusCrc(&crc);
+	memcpy(fingerPrintAddr, i_pPrintfigner, i_printfinerLen);
 }
 
 /*write flash application information called by bootloader last step*/
