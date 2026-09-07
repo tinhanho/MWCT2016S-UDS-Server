@@ -42,11 +42,16 @@ When you update, please do not forgot to del me and add your info at here.
 //#include "includes.h"
 #include "standardTypes.h"
 #include "fls_app.h"
+#include "C40_Ip_Cfg.h"
+#include "C40_Ip.h"
 #include "uds_app.h"
 
 /*******************************************************************************
  * Variables
  ******************************************************************************/
+boolean Boot_WriteBootInfo(void);
+
+
 static boolean Boot_IsAPPValid(void)
 {
 	boolean bResult = FALSE;
@@ -59,7 +64,28 @@ static boolean Boot_IsAPPValid(void)
 		bResult = Flash_IsAppInFlashValid();
 	}
 
+	if(TRUE == bResult)
+	{
+		bResult = Boot_WriteBootInfo();
+	}
+
 	return bResult;
+}
+
+static boolean Boot_IsFirmwareValid(void)
+{
+	volatile const Boot_InfoType *bInfo = APP_STATUS_ADDRESS;
+	volatile const uint8 *fingerPrint = bInfo->fingerPrint;
+
+	for(uint8 i=0; i<FL_FINGER_PRINT_LENGTH; i++)
+	{
+		if(fingerPrint[i]!=0xFF)
+		{
+			return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 
@@ -75,16 +101,69 @@ void Boot_JumpToAppOrNot(void)
 {
 	uint32 resetHandlerAddr = 0u;
 
-	if((TRUE == Boot_IsAPPValid())) /*&& (TRUE != Boot_IsRequestEnterBootloader()))*/
+	if((TRUE == Boot_IsAPPValid()) || (TRUE == Boot_IsFirmwareValid())) /*&& (TRUE != Boot_IsRequestEnterBootloader()))*/
 	{
 		Boot_RemapApplication();
-		
+
+		volatile const Boot_InfoType *bInfo = APP_STATUS_ADDRESS;
+
+		Flash_SetAppStartAddress(bInfo->appStartAddr);
+
 		resetHandlerAddr = Flash_GetResetHandlerAddr();
 		
 		Boot_JumpToApp(resetHandlerAddr);
 	}
 }
 
+boolean Boot_ClearBootInfo(void)
+{
+	DisableAllInterrupts();
+	C40_Ip_VirtualSectorsType VirtualSector = C40_Ip_GetSectorNumberFromAddress(APP_STATUS_ADDRESS);
+	if(C40_IP_STATUS_SECTOR_PROTECTED == C40_Ip_GetLock(VirtualSector))
+	{
+		C40_Ip_ClearLock(VirtualSector, 0);
+	}
+	if(C40_IP_STATUS_SUCCESS != C40_Ip_MainInterfaceSectorErase(VirtualSector, 0))
+	{
+		return FALSE;
+	}
+	while(C40_IP_STATUS_SUCCESS != C40_Ip_MainInterfaceSectorEraseStatus())
+	{
+		//do nothing
+	}
+	EnableAllInterrupts();
+
+	return TRUE;
+}
+
+boolean Boot_WriteBootInfo(void)
+{
+	Boot_InfoType bootInfo;
+	bootInfo.appStartAddr = Flash_GetAppStartAddress();
+	memcpy(bootInfo.fingerPrint, Flash_GetFingerPrintAddr(), FL_FINGER_PRINT_LENGTH);
+
+#ifdef FIRMWARE_FINGERPRINT_TEST
+	bootInfo.fingerPrint[0] = 0xAA;
+#endif
+
+	DisableAllInterrupts();
+	C40_Ip_VirtualSectorsType VirtualSector = C40_Ip_GetSectorNumberFromAddress(APP_STATUS_ADDRESS);	
+	if(C40_IP_STATUS_SECTOR_PROTECTED == C40_Ip_GetLock(VirtualSector))
+	{
+		C40_Ip_ClearLock(VirtualSector, 0);
+	}
+	if(C40_IP_STATUS_SUCCESS != C40_Ip_MainInterfaceWrite(APP_STATUS_ADDRESS, sizeof(bootInfo), &bootInfo, 0))
+	{
+		return FALSE;
+	}
+	while(C40_IP_STATUS_SUCCESS != C40_Ip_MainInterfaceWriteStatus())
+	{
+		// do nothing
+	}
+	EnableAllInterrupts();
+
+	return TRUE;
+}
 // /*request bootloader mode check*/
 // boolean Boot_CheckReqBootloaderMode(void)
 // {

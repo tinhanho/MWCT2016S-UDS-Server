@@ -10,10 +10,12 @@
 #define PROGRAM_SIZE (128u)
 
 /*Flash finger print length*/
-#define FL_FINGER_PRINT_LENGTH  (17u)
+#define FL_FINGER_PRINT_LENGTH  (16u)
 
 /*invalid UDS services ID*/
 #define INVALID_UDS_SERVICES_ID (0xFFu)
+
+#define APP_STATUS_ADDRESS (0x10000000)
 
 typedef enum
 {

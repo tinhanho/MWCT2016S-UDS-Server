@@ -39,6 +39,7 @@
 #include "FlexCAN_Ip.h"
 #include "IntCtrl_Ip.h"
 #include "C40_Ip.h"
+#include "user_config.h"
 //#include "Mem_43_INFLS.h"
 //#include "MemAcc.h"
 /* User includes */

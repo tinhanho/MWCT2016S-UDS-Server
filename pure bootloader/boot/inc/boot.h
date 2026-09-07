@@ -24,6 +24,7 @@
  * User Include
  ******************************************************************************/
 #include "boot_cfg.h"
+#include "fls_app.h"
 
 /*! 
  * @file: boot.h
@@ -56,6 +57,15 @@ When you update, please do not forgot to del me and add your info at here.
 extern "C" {
 #endif
 
+#define FIRMWARE_FINGERPRINT_TEST
+#define ALIGN 4
+
+typedef struct{
+	uint32 appStartAddr;
+    uint8 fingerPrint[FL_FINGER_PRINT_LENGTH];
+    uint8 reserved[ALIGN];
+}Boot_InfoType;
+
 /*******************************************************************************
  * API
  ******************************************************************************/
@@ -85,6 +95,10 @@ extern 	void Boot_JumpToAppOrNot(void);
 /*request bootloader mode check*/
 extern boolean Boot_CheckReqBootloaderMode(void);
 
+
+extern uint32 Flash_GetAppStartAddress(void);
+extern uint8 *Flash_GetFingerPrintAddr(void);
+extern void Flash_SetAppStartAddress(uint32 addr);
 
 /*! @}*/
 

@@ -36,6 +36,7 @@ When you update, please do not forgot to del me and add your info at here.
 #include "flash_hal_cfg.h"
 #include "fls_app.h"
 #include "CRC_hal.h"
+//#include "Power_Ip.h"
 
 /*******************************************************************************
  * Variables
@@ -109,17 +110,17 @@ When you update, please do not forgot to del me and add your info at here.
 // }
 
 /*Is power on trigger reset?*/
-//boolean Boot_IsPowerOnTriggerReset(void)
-//{
-//	boolean result = FALSE;
-//	if( (MCU_SWT0_RST_RESET != Power_Ip_GetResetReason()) ||
-//		(MCU_WAKEUP_REASON  == Power_Ip_GetResetReason()))
-//	{
-//		result = TRUE;
-//	}
-//
-//	return result;
-//}
+// boolean Boot_IsPowerOnTriggerReset(void)
+// {
+// 	boolean result = FALSE;
+// 	if( (MCU_SWT0_RST_RESET != Power_Ip_GetResetReason()) ||
+// 		(MCU_WAKEUP_REASON  == Power_Ip_GetResetReason()))
+// 	{
+// 		result = TRUE;
+// 	}
+
+// 	return result;
+// }
 
 /*when power on, clear all flag in RAM for ECC.*/
 //void Boot_PowerONClearAllFlag(void)

@@ -84,6 +84,10 @@ extern void BOOTLOADER_MAIN_Init(void (*pfBSP_Init)(void), void (*pfAbortTxMsg)(
 /*Bootloader main demo*/
 extern void BOOTLOADER_MAIN_Demo(void);
 
+extern boolean Flash_IsAppEnterPrgroamSession(void);
+
+extern boolean Boot_ClearBootInfo(void);
+
 /*! @}*/
 
 /*!

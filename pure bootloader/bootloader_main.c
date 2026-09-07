@@ -67,20 +67,25 @@ static void BOOTLOADER_MAIN_PrintVersion(void);
  *END**************************************************************************/
 void BOOTLOADER_MAIN_Init(void (*pfBSP_Init)(void), void (*pfAbortTxMsg)(void))
 {
-	// /*Is power on ?*/
-	// if(TRUE == Boot_IsPowerOnTriggerReset())
-	// {
-	// 	Boot_PowerONClearAllFlag();
-	// }
-
-	/*Check jump to APP or not.*/
-	Boot_JumpToAppOrNot();
-
 	/*User Init: clock CAN Lin etc..*/
 	if(NULL_PTR != pfBSP_Init)
 	{
 		/*do BSP init*/
 		(*pfBSP_Init)();
+	}
+
+
+	Boot_JumpToAppOrNot();
+
+	/*Enter bootloader, clear appstatus and bootinfo*/
+	FLASH_APP_Init();
+
+	Boot_ClearBootInfo(); /*How to handle a false return value?*/
+
+	if(TRUE == Flash_IsAppEnterPrgroamSession())
+	{
+		UDS_SetCurrentSession(PROGRAM_SESSION);
+		UDS_RestartS3Server();
 	}
 	
 	BOOTLOADER_DEBUG_Init();
@@ -106,8 +111,6 @@ void BOOTLOADER_MAIN_Init(void (*pfBSP_Init)(void), void (*pfAbortTxMsg)(void))
 	//Boot_CheckReqBootloaderMode();
 
 	TP_RegisterAbortTxMsg(pfAbortTxMsg);
-
-	FLASH_APP_Init();
 
 	/*Print bootloader version*/
 	BOOTLOADER_MAIN_PrintVersion();

@@ -111,14 +111,7 @@ static boolean FLASH_HAL_EraseSector(const uint32 i_startAddr, const uint32 i_no
 			c40Status = C40_Ip_MainInterfaceSectorEraseStatus();
 		}
 		while (C40_IP_STATUS_BUSY == c40Status);
-		ASM_KEYWORD(" dsb ");
-		ASM_KEYWORD(" isb ");
 
-		/* 延遲約 10~20 微秒，讓 Flash 硬體控制器完成 Pipeline 與 Bus 復位 */
-		for (volatile uint32 delay = 0; delay < 1000; delay++)
-		{
-			ASM_KEYWORD(" nop ");
-		}
 		EnableAllInterrupts();
 		if((C40_IP_STATUS_SUCCESS == c40Res) && (C40_IP_STATUS_SUCCESS == c40Status))
 		{

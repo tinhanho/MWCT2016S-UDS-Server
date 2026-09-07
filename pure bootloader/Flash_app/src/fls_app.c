@@ -29,6 +29,8 @@ typedef struct
 
 typedef struct
 {
+    boolean isProgramSession;
+
 	/*flash programming successfull? If programming successfull, the value set TRUE, else set FALSE*/
 	uint8 isFlashProgramSuccessfull;  
 
@@ -321,15 +323,15 @@ void Flash_InitDowloadInfo(void)
 /*flash app module init*/
 void FLASH_APP_Init(void)
 {
-	gs_stFlashDownloadInfo.isFingerPrintWritten = FALSE;
+//	gs_stFlashDownloadInfo.isFingerPrintWritten = FALSE;
 
-	Flash_EraseFlashDriverInRAM();
-
-	Flash_SetFlashDriverNotDonwload();
-
-	Flash_SetNextDownloadStep(FL_REQUEST_STEP);
-
-	Flash_SetOperateFlashActiveJob(FLASH_IDLE, NULL_PTR, INVALID_UDS_SERVICES_ID, NULL_PTR);
+//	Flash_EraseFlashDriverInRAM();
+//
+//	Flash_SetFlashDriverNotDonwload();
+//
+//	Flash_SetNextDownloadStep(FL_REQUEST_STEP);
+//
+//	Flash_SetOperateFlashActiveJob(FLASH_IDLE, NULL_PTR, INVALID_UDS_SERVICES_ID, NULL_PTR);
 
 	gs_stFlashDownloadInfo.pstAppFlashStatus = &gs_stAppFlashStatus;
 	
@@ -1326,6 +1328,26 @@ uint8 Flash_IsAppInFlashValid(void)
 	}
 
 	return FALSE;
+}
+
+boolean Flash_IsAppEnterPrgroamSession(void)
+{
+	return gs_stAppFlashStatus.isProgramSession;
+}
+
+uint32 Flash_GetAppStartAddress(void)
+{
+	return gs_stAppFlashStatus.appStartAddr;
+}
+
+void Flash_SetAppStartAddress(uint32 addr)
+{
+	gs_stAppFlashStatus.appStartAddr = addr;
+}
+
+uint8 *Flash_GetFingerPrintAddr(void)
+{
+	return &(gs_stAppFlashStatus.aFingerPrint);
 }
 
 /*erase flash driver in RAM*/
