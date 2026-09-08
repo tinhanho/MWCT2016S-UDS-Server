@@ -60,7 +60,7 @@ extern "C" {
 #endif
 
 #define CRC_SEED_INIT_VALUE	0xffff
-typedef uint32 tCrc;
+typedef uint16 tCrc;
 
 /*******************************************************************************
  * API

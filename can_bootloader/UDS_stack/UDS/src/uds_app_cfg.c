@@ -817,8 +817,6 @@ static void UDS_RoutineControl(struct UDSServiceInfo* i_pstUDSServiceInfo, tUdsA
     {
         ReceivedCrc = m_pstPDUMsg->aDataBuf[4u];
         ReceivedCrc = (ReceivedCrc << 8u) | m_pstPDUMsg->aDataBuf[5u];
-        ReceivedCrc = (ReceivedCrc << 8u) | m_pstPDUMsg->aDataBuf[6u];
-        ReceivedCrc = (ReceivedCrc << 8u) | m_pstPDUMsg->aDataBuf[7u];
         Flash_SavedReceivedCheckSumCrc(ReceivedCrc);
 
         /*request client timeout time*/

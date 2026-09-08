@@ -62,7 +62,7 @@ extern "C" {
 typedef struct{
 	uint32 appStartAddr;
     uint8 fingerPrint[FL_FINGER_PRINT_LENGTH];
-    uint8 reserved[ALIGN];
+    uint8 reserved[ALIGN]; // CRC <----------
 }Boot_InfoType;
 
 /*******************************************************************************

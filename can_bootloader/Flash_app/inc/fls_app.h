@@ -69,7 +69,7 @@ extern uint8 Flash_IsReadAppInfoFromFlashValid(void);
 extern uint8 Flash_IsAppInFlashValid(void);
 
 /*save received check sum crc*/
-extern void Flash_SavedReceivedCheckSumCrc(uint32 i_receivedCrc);
+extern void Flash_SavedReceivedCheckSumCrc(uint16 i_receivedCrc);
 
 /*erase flash driver in RAM*/
 extern void Flash_EraseFlashDriverInRAM(void);

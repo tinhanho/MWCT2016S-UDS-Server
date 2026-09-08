@@ -79,7 +79,7 @@ static boolean Boot_IsFirmwareValid(void)
 
 	for(uint8 i=0; i<FL_FINGER_PRINT_LENGTH; i++)
 	{
-		if(fingerPrint[i]!=0xFF)
+		if(fingerPrint[i]!=0xFF) // && Pass CRC
 		{
 			return TRUE;
 		}

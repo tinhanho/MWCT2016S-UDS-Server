@@ -90,7 +90,7 @@ typedef struct
 	uint32 receivedDataLength;
 
 	/*received CRC value*/
-	uint32 receivedCRC;
+	uint16 receivedCRC;
 
 	/*calculate CRC value*/
 	uint32 calculateCRCValue;
@@ -348,6 +348,8 @@ void Flash_OperateMainFunction(void)
 	tFlshJobModle currentFlashJob = FLASH_IDLE;
 	boolean bIsOperateFinshed = FALSE;
 	
+
+
 	currentFlashJob = Flash_GetOperateFlashActiveJob();
 	
     switch (currentFlashJob)
@@ -1026,22 +1028,22 @@ static uint8 Flash_Checksum(boolean * o_pbIsOperateFinsh)
 		/*check CRC valid or not*/
 		if(TRUE == Flash_IsReceivedCRCValid())	
 		{
-			if((TRUE == Flash_IsFlashDriverSoftwareData()))
-			{
-				Flash_SetFlashDriverDowload();
+			// if((TRUE == Flash_IsFlashDriverSoftwareData()))
+			// {
+			// 	Flash_SetFlashDriverDowload();
 
-				if(TRUE != FLASH_HAL_RegisterFlashAPI(&gs_stFlashDownloadInfo.stFlashOperateAPI))
-				{
-					Flash_SetFlashDriverNotDonwload();
-				}
-				else
-				{
-					if(NULL_PTR != gs_stFlashDownloadInfo.stFlashOperateAPI.pfFlashInit)
-					{
-						gs_stFlashDownloadInfo.stFlashOperateAPI.pfFlashInit(); 
-					}
-				}
-			}
+			// 	if(TRUE != FLASH_HAL_RegisterFlashAPI(&gs_stFlashDownloadInfo.stFlashOperateAPI))
+			// 	{
+			// 		Flash_SetFlashDriverNotDonwload();
+			// 	}
+			// 	else
+			// 	{
+			// 		if(NULL_PTR != gs_stFlashDownloadInfo.stFlashOperateAPI.pfFlashInit)
+			// 		{
+			// 			gs_stFlashDownloadInfo.stFlashOperateAPI.pfFlashInit(); 
+			// 		}
+			// 	}
+			// }
 			
 			isCheckSuccessful = TRUE;
 		}
@@ -1155,7 +1157,7 @@ static boolean Flash_DoChecksum(boolean *o_pbIsOperateFinsh)
 }
 
 /*save received check sum crc*/
-void Flash_SavedReceivedCheckSumCrc(uint32 i_receivedCrc)
+void Flash_SavedReceivedCheckSumCrc(uint16 i_receivedCrc)
 {
 	gs_stFlashDownloadInfo.receivedCRC = (tCrc)i_receivedCrc;
 }

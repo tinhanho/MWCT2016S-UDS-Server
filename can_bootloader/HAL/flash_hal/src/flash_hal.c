@@ -96,21 +96,24 @@ static boolean FLASH_HAL_EraseSector(const uint32 i_startAddr, const uint32 i_no
 	C40_Ip_VirtualSectorsType VirtualSector;
 	sectorLength = FLASH_HAL_Get1SectorBytes();
 	//The program flash start address is 0x400000u, 32 is the program flash VirtualSector begin
-	VirtualSector = (i_startAddr - 0x400000u)/sectorLength + C40_IP_MAX_DATA_SECTOR;
+	//VirtualSector = (i_startAddr - 0x400000u)/sectorLength + C40_IP_MAX_DATA_SECTOR;
+	VirtualSector = C40_Ip_GetSectorNumberFromAddress(i_startAddr);
 	for(i=0;i<i_noEraseSectors;i++)
 	{
+		/* Erase sector */
+		DisableAllInterrupts();
+
 		if(C40_IP_STATUS_SECTOR_PROTECTED == C40_Ip_GetLock(VirtualSector+i))
 		{
 			C40_Ip_ClearLock(VirtualSector+i, 0);
 		}
-		/* Erase sector */
-		DisableAllInterrupts();
 		c40Res = C40_Ip_MainInterfaceSectorErase(VirtualSector+i, 0);
 		do
 		{
 			c40Status = C40_Ip_MainInterfaceSectorEraseStatus();
 		}
 		while (C40_IP_STATUS_BUSY == c40Status);
+
 
 		EnableAllInterrupts();
 		if((C40_IP_STATUS_SUCCESS == c40Res) && (C40_IP_STATUS_SUCCESS == c40Status))
