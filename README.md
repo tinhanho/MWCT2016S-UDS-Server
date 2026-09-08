@@ -2,14 +2,25 @@
 
 > Reference: check [nxp](https://community.nxp.com/t5/S32K-Knowledge-Base/Unified-bootloader-Demo/ta-p/1423099)
 
-## Installaltion
+## Requirements
 
-- Follow the PCAN tutorial and install ECUBus
+- S32K312 SDK and configuration tool with C40_Ip and Power_Ip support.
+- ECUBus for UDS test execution.
+- PCAN tools and a CAN interface. See [PCAN Tutorial.pdf](PCAN%20Tutorial.pdf).
 
-## App Demo
+## Project Layout
 
-1. Import FIFO and UDS_Stack
-2. Add ```TP_SystemTickCtl``` and ```UDS_SystemTickCtl``` in 1ms task
+- `application/`: Application-side FIFO, transport protocol, and UDS stack.
+- `can_bootloader/`: CAN bootloader, Flash services, HAL, and UDS stack.
+- `bin/S32K312_CAN_bootloader_RTD2d0.bin`: Built CAN bootloader image.
+- `ECUBus Config/Boot_Test/config.json`: ECUBus Boot_Test configuration.
+
+Install ECUBus and configure the CAN hardware by following the PCAN tutorial before running the examples.
+
+## Application
+
+1. Import the modules under `application/FIFO` and `application/UDS_stack` into the application project.
+2. Add ```TP_SystemTickCtl``` and ```UDS_SystemTickCtl``` in 1ms task.
 ```c
 static void SampleAppTask1ms(uint16 wNumTicks)
 {
@@ -19,10 +30,10 @@ static void SampleAppTask1ms(uint16 wNumTicks)
     ...
 }
 ```
-3. Register RX_MAIL, TX_MAIL, RX message configuration, TX message configuration
-4. Call ```TP_Init``` and ```UDS_Init``` in main.c
-5. Add TP, UDS and SendMsg mainfunction in main loop and set flexcan callback function
-    - Implementations of SendMsgMainFun and flexcan0_Callback can be located in main.c
+3. Register RX_MAIL, TX_MAIL, RX message configuration, and TX message configuration.
+4. Call ```TP_Init``` and ```UDS_Init``` in `main.c`.
+5. Add the TP, UDS, and SendMsg main functions to the main loop and set the FlexCAN callback function.
+    - Implementations of SendMsgMainFun and flexcan0_Callback can be located in `main.c`.
 
 ```c
 /*Send msg main function*/
@@ -61,25 +72,17 @@ void flexcan0_Callback(uint8 instance,Flexcan_Ip_EventType eventType,
 }
 ```
 
-## CAN Bootloader Demo
+## CAN Bootloader
 
-> Use the Boot_Test project rather instead of S32K312_user_config
+> Use the Boot_Test project instead of S32K312_user_config.
 
-1. Do all the steps in [App Demo](#app-demo)
-2. Import boot, Flash_app, bootmain.c .h and HAL in src and update UDS_stack
-3. Add C40_Ip, Power_Ip module in configuration tool
+1. Complete the steps in [Application](#application).
+2. Import the modules under `can_bootloader/` into the bootloader project.
+3. Add the C40_Ip and Power_Ip modules in the configuration tool.
+4. Configure the CAN transport layer and application memory range for the target.
+5. Use `bin/S32K312_CAN_bootloader_RTD2d0.bin` as the bootloader image when programming the target.
+6. Open `ECUBus Config/Boot_Test/config.json` in ECUBus to run the bootloader test sequence.
 
-<!-- 
-Flash driver in RAM needs further step and proper binary code for flash driver
-4. Update C40_Ip.c
-```c
-typedef C40_Ip_StatusType (*C40_Ip_StartSequenceType)(uint8_t Operation,uint32_t TimeoutCnt);
-C40_Ip_StartSequenceType C40_Ip_StartSequencePtr = NULL;
+## TODO
 
-void C40_Ip_StartSequenceInit(uint8_t* FlsDrv)
-{
-    //blx cmd address need to add 1
-    C40_Ip_StartSequencePtr = (C40_Ip_StartSequenceType)(((uint32_t)FlsDrv)+1);
-} 
-```
-!-->
+- Upload the memory map configuration.
